@@ -11,6 +11,8 @@
     "axios": "^0.24.0",
     "classnames": "^2.3.1",
     "date-fns": "^2.27.0",
+    "firebase": "^9.6.0",
+    "firebase-tools": "^9.23.1",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "nanoid": "^3.1.30",
@@ -49,9 +51,9 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
     "react-devtools": "^4.21.0"
   }
 }

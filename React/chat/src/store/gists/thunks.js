@@ -21,16 +21,14 @@ export const getGists =
     }
   };
 
-export const searchGistsByUserName =
-  (name = "bogdanq") =>
-  async (dispatch, _, api) => {
-    try {
-      dispatch(searchGistsStart());
+export const searchGistsByUserName = (name) => async (dispatch, _, api) => {
+  try {
+    dispatch(searchGistsStart());
 
-      const { data } = await api.searchGistsByNameApi(name);
+    const { data } = await api.searchGistsByNameApi(name);
 
-      dispatch(searchGistsSuccess(data));
-    } catch (e) {
-      dispatch(searchGistsError(e));
-    }
-  };
+    dispatch(searchGistsSuccess(data));
+  } catch (e) {
+    dispatch(searchGistsError(e));
+  }
+};

@@ -10,14 +10,18 @@ import { useStyles } from "./use-styles";
 import debounce from "lodash.debounce";
 import {
   messagesSelector,
-  deleteMessage,
-  sendMessageWithBot,
+  // deleteMessage,
+  deleteMessageFB,
+  // sendMessageWithBot,
+  sendMessageFB,
 } from "../../store/messages";
 import {
   conversationsSelector,
   messageValueSelector,
   handleChangeMessageValue,
 } from "../../store/conversations";
+import { sessionSelector } from "../../store/session";
+
 import { useDispatch, useSelector } from "react-redux";
 
 const Message = ({ message, refWrapper, dispatch, roomId }) => {
@@ -31,7 +35,7 @@ const Message = ({ message, refWrapper, dispatch, roomId }) => {
     }
   }, [refMessage, refWrapper]);
   const handleDeleteMessage = (event) => {
-    dispatch(deleteMessage(message.id, roomId));
+    dispatch(deleteMessageFB(message.id, roomId));
   };
   return (
     <div ref={refMessage} className={styles.messageCart}>
@@ -55,6 +59,7 @@ export const MessageList = () => {
 
   const messages = useSelector(messagesSelector(roomId));
   const conversations = useSelector(conversationsSelector);
+  const session = useSelector(sessionSelector);
   const value = useSelector(messageValueSelector(roomId));
   const dispatch = useDispatch();
   const ref = useRef(null);
@@ -69,16 +74,16 @@ export const MessageList = () => {
       addMessage();
     }
   };
-  const addMessage = useCallback(
-    (author = "user", botMessage) => {
-      if (value || botMessage) {
-        dispatch(
-          sendMessageWithBot({ author, text: botMessage || value }, roomId)
-        );
-      }
-    },
-    [dispatch, value, roomId]
-  );
+  const addMessage = useCallback(() => {
+    if (value) {
+      dispatch(
+        sendMessageFB(
+          { author: session?.user?.email ?? "user", text: value },
+          roomId
+        )
+      );
+    }
+  }, [dispatch, value, roomId, session]);
 
   useEffect(() => {
     let block = refWrapper.current;

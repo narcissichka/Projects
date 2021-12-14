@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getGists, gistSelector, searchGistsByUserName } from "../store/gists";
 import { Input, InputAdornment } from "@mui/material";
@@ -17,19 +17,26 @@ export function Gists() {
     gistsErrorSearch,
   } = useSelector(gistSelector);
   const dispatch = useDispatch();
-  const refInput = useRef(null);
-  const refSend = useRef(null);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState("bogdanq");
   const [selected, setSelected] = useState(1);
   const buttons = Array.from({ length: 10 }).map((_, index) => index + 1);
+
+  // const searchGistsByUserNameDebounsed = useMemo(() => {
+  //   return debounce((query) => {
+  //     dispatch(searchGistsByUserName(query ?? "bogdanq"));
+  //   }, 500);
+  // }, [dispatch]);
+
   useEffect(() => {
     dispatch(getGists());
     dispatch(searchGistsByUserName("bogdanq"));
   }, [dispatch]);
 
-  const cb = debounce(() => {
-    dispatch(searchGistsByUserName(value));
-  }, 200);
+  const cb = useMemo(() => {
+    return debounce(() => {
+      dispatch(searchGistsByUserName(value ?? "bogdanq"));
+    }, 500);
+  }, [dispatch, value]);
 
   const buttonClass = (button) => {
     const butclass =
@@ -37,28 +44,6 @@ export function Gists() {
         ? `${styles.paginationItem} ${styles.currentPage}`
         : `${styles.paginationItem}`;
     return butclass;
-  };
-  const displayGists = () => {
-    if (gistsError) {
-      return <h1>{gistsError}</h1>;
-    } else {
-      return gists.map((gist, index) => (
-        <a className={styles.link} href={gist.url} key={index}>
-          {gist.url}
-        </a>
-      ));
-    }
-  };
-  const displaySearchGists = () => {
-    if (gistsErrorSearch) {
-      return <h1>{gistsErrorSearch}</h1>;
-    } else {
-      return gistsSearch.map((gist, index) => (
-        <a className={styles.link} href={gist.url} key={index}>
-          {gist.url}
-        </a>
-      ));
-    }
   };
   const styles = useStyles();
   return (
@@ -77,7 +62,13 @@ export function Gists() {
             <h2 className={styles.loading}>loading...</h2>
           ) : (
             <div>
-              {displayGists()}
+              {!!gistsError && <h1>{gistsError}</h1>}
+              {!gistsError &&
+                gists.map((gist, index) => (
+                  <a className={styles.link} href={gist.url} key={index}>
+                    {gist.url}
+                  </a>
+                ))}
               <div className={styles.pagination}>
                 {buttons.map((button, index) => (
                   <button
@@ -99,7 +90,6 @@ export function Gists() {
         <div className={styles.block}>
           <h2 className={styles.headText}>Search Gists</h2>
           <Input
-            ref={refInput}
             fullWidth
             className={styles.input}
             placeholder="Enter name..."
@@ -112,7 +102,6 @@ export function Gists() {
             endAdornment={
               <InputAdornment position="end">
                 <Send
-                  ref={refSend}
                   onClick={() => {
                     cb();
                   }}
@@ -124,7 +113,15 @@ export function Gists() {
           {gistsLoadingSearch ? (
             <h2 className={styles.loading}>loading...</h2>
           ) : (
-            <div>{displaySearchGists()}</div>
+            <div>
+              {!!gistsErrorSearch && <h1>{gistsErrorSearch}</h1>}
+              {!gistsErrorSearch &&
+                gistsSearch.map((gist, index) => (
+                  <a className={styles.link} href={gist.url} key={index}>
+                    {gist.url}
+                  </a>
+                ))}
+            </div>
           )}
         </div>
       </div>

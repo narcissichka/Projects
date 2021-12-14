@@ -8,8 +8,10 @@ import {
 } from "@mui/material";
 import {
   conversationsSelector,
-  createConversation,
-  deleteConversation,
+  putConversationFB,
+  // createConversation,
+  //deleteConversation,
+  deleteConversationFB,
 } from "../../store/conversations";
 import { messagesSelector } from "../../store/messages";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +24,7 @@ export const ChatBar = ({ title, selected, handleListItemClick, dispatch }) => {
   const messages = useSelector(messagesSelector(title));
   let lastMessage = messages.length ? messages[messages.length - 1] : null;
   const handleDeleteChat = (event) => {
-    dispatch(deleteConversation(title));
+    dispatch(deleteConversationFB(title));
     setTimeout(() => navigate("/chat"), 100);
   };
   return (
@@ -30,22 +32,30 @@ export const ChatBar = ({ title, selected, handleListItemClick, dispatch }) => {
       className={styles.listItem}
       selected={selected}
       onClick={handleListItemClick}
+      data-testid="wrapper"
     >
       <ListItemIcon>
         <AccountCircle fontSize="medium" className={styles.icon} />
       </ListItemIcon>
-      <ListItemText className={styles.chatName} primary={title} />
-      {lastMessage && (
-        <div>
-          <ListItemText primary={lastMessage.author} />
-          <ListItemText primary={lastMessage.text} />
-        </div>
-      )}
+      <ListItemText className={`${styles.chatName} chatName`} primary={title} />
       <CloseSharp
         className={styles.delete}
         fontSize="small"
         onClick={handleDeleteChat}
       />
+      {lastMessage && (
+        <div>
+          <Divider />
+          <ListItemText
+            className={`${styles.author} author`}
+            primary={lastMessage.author}
+          />
+          <ListItemText
+            className={`${styles.text} text`}
+            primary={lastMessage.text}
+          />
+        </div>
+      )}
     </ListItemButton>
   );
 };
@@ -62,7 +72,8 @@ export const ChatList = () => {
       (conversation) => conversation.title === name
     );
     if (name && isValidName) {
-      dispatch(createConversation(name));
+      // dispatch(putConversationFB(name));
+      dispatch(putConversationFB(name));
     } else {
       alert("не валидная комната");
     }

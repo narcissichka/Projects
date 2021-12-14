@@ -7,14 +7,26 @@ export const useStyles = makeStyles((ctx) => {
       flexDirection: "column",
     },
     chatName: {
+      color: `${ctx.palette.secondary.dark}`,
+      width: "55%",
+      flexGrow: "1",
+    },
+    author: {
+      color: `${ctx.palette.secondary.main}`,
+      width: "100%",
+      fontSize: "0.88rem",
+    },
+    text: {
       color: `${ctx.palette.secondary.light}`,
       width: "100%",
+      fontSize: "0.7rem",
     },
     link: {
       textDecoration: "none",
     },
     listItem: {
       userSelect: "none",
+      flexWrap: "wrap",
       "& .Mui-selected": {
         backgroundColor: `${ctx.palette.secondary.main}`,
       },
@@ -24,6 +36,10 @@ export const useStyles = makeStyles((ctx) => {
     },
     delete: {
       color: "gray",
+      flexGrow: "1",
+    },
+    icon: {
+      flexGrow: "1",
     },
     add: {
       color: "gray",
